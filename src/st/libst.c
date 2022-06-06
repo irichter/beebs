@@ -21,6 +21,7 @@
    along with this program. If not, see <http://www.gnu.org/licenses/>. */
 
 #include "support.h"
+#include <stdio.h>
 
 /* This scale factor will be changed to equalise the runtime of the
    benchmarks. */
@@ -194,19 +195,29 @@ int RandomInteger()
    return (Seed);
 }
 
+#include <float.h>
+
+int fp_not_equal(double a, double b) {
+   double epsilon = (0.0001) * fabs(b);
+   int rv = __builtin_expect(!!(fabs(a - b) > epsilon), 0);
+   if(rv)
+      printf(__FILE__ ": fp_not_equal(%lf, %lf), epsilon = %lf", a, b, epsilon);
+  return __builtin_expect(!!(fabs(a - b) > epsilon), 0);
+}
+
 int verify_benchmark(int unused) {
   double expSumA = 4999.002470660901963128708302974700927734375;
   double expSumB = 4996.843113032735345768742263317108154296875;
   double expCoef = 0.99990005485361932446863875156850554049015045166016;
-  if (expSumA != SumA) {
+  if (fp_not_equal(expSumA, SumA)) {
     //printf("%.50f\n, %.50f\n\n", SumA, expSumA);
     return 0;
   }
-  if(expSumB != SumB) {
+  if(fp_not_equal(expSumB, SumB)) {
     //printf("%.50f\n, %.50f\n\n", SumB, expSumB);
     return 0;
   }
-  if(expCoef != Coef) {
+  if(fp_not_equal(expCoef, Coef)) {
     //printf("%.50f\n, %.50f\n\n", Coef, expCoef);
     return 0;
   }

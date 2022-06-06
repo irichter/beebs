@@ -75,6 +75,8 @@
    along with this program. If not, see <http://www.gnu.org/licenses/>. */
 
 #include "support.h"
+#include <math.h>
+#include <stdio.h>
 
 /* This scale factor will be changed to equalise the runtime of the
    benchmarks. */
@@ -181,6 +183,16 @@ benchmark (void)
   return 0;
 }
 
+#include <float.h>
+
+int fp_not_equal(float a, float b) {
+   float epsilon = (0.0001) * fabsf(b);
+   int rv = __builtin_expect(!!(fabsf(a - b) > epsilon), 0);
+   if(rv)
+      printf(__FILE__ ": fp_not_equal(%f, %f), epsilon = %f", a, b, epsilon);
+  return __builtin_expect(!!(fabsf(a - b) > epsilon), 0);
+}
+
 int verify_benchmark(int unused)
 {
   float exp_a[8][9] = {{20.000000000000000000000000000000, 3.000000000000000000000000000000, 4.000000000000000000000000000000, 5.000000000000000000000000000000, 6.000000000000000000000000000000, 7.000000000000000000000000000000, 0.000000000000000000000000000000, 0.000000000000000000000000000000, 0.000000000000000000000000000000},
@@ -195,14 +207,14 @@ int verify_benchmark(int unused)
   float exp_x[] = {1, 1, 0.999999821186065673828125, 1, 1.00000011920928955078125, 1};
   int i, j;
   for (i=0; i<6; i++) {
-    if (b[i] != exp_b[i])
+    if (fp_not_equal(b[i], exp_b[i]))
       return 0;
-    if (x[i] != exp_x[i])
+    if (fp_not_equal(x[i], exp_x[i]))
       return 0;
   }
   for (i=0; i<8; i++)
     for (j=0; j<9; j++)
-      if (a[i][j] != exp_a[i][j])
+      if (fp_not_equal(a[i][j], exp_a[i][j]))
         return 0;
 
   return 1;

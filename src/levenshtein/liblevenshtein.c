@@ -55,7 +55,8 @@ int levenshtein_distance(const char *s, const char *t) {
     int i, j;
     int sl = strlen(s);
     int tl = strlen(t);
-    int d[sl + 1][tl + 1];
+    // int d[sl + 1][tl + 1];
+    int d[32][32];
 
     for (i = 0; i <= sl; i++)
         d[i][0] = i;

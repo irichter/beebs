@@ -20,6 +20,7 @@
 /* Crc - 32 BIT ANSI X3.66 CRC checksum files */
 
 #include "support.h"
+#include <stdio.h>
 
 /* This scale factor will be changed to equalise the runtime of the
    benchmarks. */
@@ -158,10 +159,11 @@ const static UNS_32_BITS crc_32_tab[] = { /* CRC polynomial 0xedb88320 */
    For BEEBS this gets round different operating systems using different
    multipliers and offsets and RAND_MAX variations. */
 
+static long int seed = 0;
+
 static int
 rand_beebs ()
 {
-  static long int seed = 0;
 
   seed = (seed * 1103515245L + 12345) & ((1UL << 31) - 1);
   return (int) (seed >> 16);
@@ -187,6 +189,7 @@ DWORD crc32pseudo()
 void
 initialise_benchmark (void)
 {
+   seed = 0;
 }
 
 
@@ -198,9 +201,13 @@ int benchmark()
   return (int)r;
 }
 
+int	iprintf (const char *, ...)
+               _ATTRIBUTE ((__format__ (__printf__, 1, 2)));
+
 int verify_benchmark(int r)
 {
-  int expected = 1207487004;
+  int expected = 1703161001;
+  iprintf("%d =? %d", r, expected);
 
   if (r != expected)
     return 0;

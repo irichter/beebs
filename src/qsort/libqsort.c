@@ -22,6 +22,7 @@
    along with this program. If not, see <http://www.gnu.org/licenses/>. */
 
 #include "support.h"
+#include <string.h>
 
 /* This scale factor will be changed to equalise the runtime of the
    benchmarks. */
@@ -80,11 +81,16 @@ float arr[20] = {
   10, 150, 222.22, 101, 77, 44, 35, 20.54, 99.99, 88.88
 };
 
+const float arr_orig[20] = {
+  5, 4, 10.3, 1.1, 5.7, 100, 231, 111, 49.5, 99,
+  10, 150, 222.22, 101, 77, 44, 35, 20.54, 99.99, 88.88
+};
+
 int istack[100];
 
 void sort(unsigned long n)
 {
-	unsigned long i,ir=n,j,k,l=1;
+	unsigned long i,ir=n-1,j,k,l=1-1;
 	int jstack=0;
 	float a,temp;
 
@@ -141,11 +147,13 @@ void sort(unsigned long n)
 
 
 
-/* This benchmark does not support verification */
-
 int
 verify_benchmark (int res __attribute ((unused)) )
 {
+	for(size_t i = 1; i < (sizeof(arr)/sizeof(arr[0])); i++) {
+		if (arr[i] < arr[i-1])
+			return 0;
+	}
   return -1;
 }
 
@@ -153,6 +161,7 @@ verify_benchmark (int res __attribute ((unused)) )
 void
 initialise_benchmark (void)
 {
+	memcpy(arr, arr_orig, sizeof(arr_orig));
 }
 
 

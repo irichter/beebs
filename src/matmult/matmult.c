@@ -42,6 +42,7 @@
  * This is a program that was developed from mm.c to matmult.c by
  * Thomas Lundqvist at Chalmers.
  *----------------------------------------------------------------------*/
+#include <stdio.h>
 #ifdef MATMULT_FLOAT
 #include <math.h>
 #endif /* MATMULT_FLOAT */
@@ -178,6 +179,16 @@ void initialise_benchmark() {
          ArrayB[OuterIndex][InnerIndex] = RANDOM_VALUE;
 }
 
+#include <float.h>
+
+int fp_not_equal(float a, float b) {
+   float epsilon = (0.0001) * fabsf(b);
+   int rv = __builtin_expect(!!(fabsf(a - b) > epsilon), 0);
+   if(rv)
+      printf(__FILE__ ": fp_not_equal(%f, %f), epsilon = %f", a, b, epsilon);
+  return __builtin_expect(!!(fabsf(a - b) > epsilon), 0);
+}
+
 int verify_benchmark(int unused)
 {
   int i, j;
@@ -220,7 +231,11 @@ int verify_benchmark(int unused)
 #endif
   for (i=0; i<UPPERLIMIT; i++)
     for (j=0; j<UPPERLIMIT; j++)
+#ifdef MATMULT_FLOAT
+      if (fp_not_equal(ResultArray[i][j], exp[i][j]))
+#else
       if (ResultArray[i][j] != exp[i][j])
+#endif
         return 0;
   return 1;
 }

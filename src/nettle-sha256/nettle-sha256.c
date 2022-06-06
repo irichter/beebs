@@ -449,9 +449,12 @@ int
 benchmark (void)
 {
   struct sha256_ctx ctx;
-  nettle_sha256.init (&ctx);
-  nettle_sha256.update (&ctx, sizeof (msg), msg);
-  nettle_sha256.digest (&ctx, nettle_sha256.digest_size, buffer);
+  sha256_init (&ctx);
+  sha256_update (&ctx, sizeof (msg), msg);
+  sha256_digest (&ctx, nettle_sha256.digest_size, buffer);
+  // nettle_sha256.init (&ctx);
+  // nettle_sha256.update (&ctx, sizeof (msg), msg);
+  // nettle_sha256.digest (&ctx, nettle_sha256.digest_size, buffer);
   return 0;
 }
 

@@ -108,7 +108,8 @@ static void repeat_fasta (char const *s, size_t count) {
     size_t len = strlen (s);
     /* BEEBS uses alloca, to avoid library and OS dependencies
        char *s2 = malloc (len + WIDTH); */
-    char *s2 = alloca (len + WIDTH);
+    // char *s2 = alloca (len + WIDTH);
+    char s2[1024];
     memcpy (s2, s, len);
     memcpy (s2 + len, s, WIDTH);
     do {

@@ -23,6 +23,7 @@
    along with this program. If not, see <http://www.gnu.org/licenses/>. */
 
 #include "support.h"
+#include <string.h>
 
 /* This scale factor will be changed to equalise the runtime of the
    benchmarks. */
@@ -40,6 +41,11 @@ float arr[20] = {
   10, 150, 222.22, 101, 77, 44, 35, 20.54, 99.99, 888.88
 };
 
+const float arr_orig[20] = {
+  5, 4, 10.3, 1.1, 5.7, 100, 231, 111, 49.5, 99,
+  10, 150, 222.22, 101, 77, 44, 35, 20.54, 99.99, 888.88
+};
+
 
 float select(unsigned long k, unsigned long n)
 {
@@ -47,8 +53,8 @@ float select(unsigned long k, unsigned long n)
 	float a,temp;
 	int flag, flag2;
 
-	l=1;
-	ir=n;
+	l=0;
+	ir=n-1;
 	flag = flag2 = 0;
 	while (!flag) {
 		if (ir <= l+1) {
@@ -103,6 +109,7 @@ benchmark (void)
 void initialise_benchmark() {
   x = 10;
   y = 20;
+  memcpy(arr, arr_orig, sizeof(arr));
 }
 
 

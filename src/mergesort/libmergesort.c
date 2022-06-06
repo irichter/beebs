@@ -178,7 +178,8 @@ void MergeSort(Test array[], const long array_count, const Comparison compare) {
 	   library support.
 	Var(buffer, Allocate(Test, array_count));
 	*/
-	Test *buffer = (Test *)alloca((array_count * sizeof(Test)));
+	// Test *buffer = (Test *)alloca((array_count * sizeof(Test)));
+	Test buffer[128];
 	MergeSortR(array, MakeRange(0, array_count), compare, buffer);
 	/* For BEEBS, no need to free with alloca
 	free(buffer);

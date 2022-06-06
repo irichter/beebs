@@ -110,12 +110,14 @@ binary_search(int x)
   return fvalue;
 }
 
+int result = 0;
 
 /* This benchmark does not support verification */
 
 int
 verify_benchmark (int res __attribute ((unused)) )
 {
+  return result == 900;
   return -1;
 }
 
@@ -129,7 +131,7 @@ initialise_benchmark (void)
 
 int benchmark()
 {
-  binary_search(8);
+  result = binary_search(8);
   return 0;
 }
 

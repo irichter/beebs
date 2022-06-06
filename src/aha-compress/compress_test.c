@@ -150,10 +150,23 @@ const unsigned long test[] = {
     0x80000000, 0xF0035555, 0x00002000,
 };
 
+unsigned long data_in1[sizeof(test)/sizeof(unsigned long)/3];
+unsigned long data_in2[sizeof(test)/sizeof(unsigned long)/3];
+unsigned long data_in3[sizeof(test)/sizeof(unsigned long)/3];
+unsigned long data_in4[sizeof(test)/sizeof(unsigned long)/3];
+
 
 void
 initialise_benchmark (void)
 {
+   const int n = sizeof(data_in1)/sizeof(data_in1[0]);
+   for (int i = 0; i < n; i++)
+   {
+      data_in1[i] = test[i*3];
+      data_in2[i] = test[i*3];
+      data_in3[i] = test[i*3];
+      data_in4[i] = test[i*3];
+   }
 }
 
 
@@ -164,6 +177,15 @@ benchmark (void)
    unsigned int r;
 
    n = sizeof(test)/sizeof(test[0]);
+
+   for (i = 0; i < sizeof(data_in1)/sizeof(data_in1[0]); i++) {
+      data_in1[i] = compress1(data_in1[i], test[(i*3)+1]);
+      data_in2[i] = compress2(data_in2[i], test[(i*3)+1]);
+      data_in3[i] = compress3(data_in3[i], test[(i*3)+1]);
+      data_in4[i] = compress4(data_in4[i], test[(i*3)+1]);
+   }
+
+   return 0;
 
    for (i = 0; i < n; i += 3) {
       r = compress1(test[i], test[i+1]);
@@ -195,6 +217,34 @@ benchmark (void)
 // r is the number of errors therefore if r = 0 then output a 1 for correct
 int verify_benchmark(int r)
 {
+   int rv = 1;
+   for (int i = 0; i < sizeof(data_in1)/sizeof(data_in1[0]); i++) {
+      if(data_in1[i] != test[(i*3)+2])
+      {
+         return 0;
+         iprintf("data_in1[%d] %lu != %lu\n", i, data_in1[i], test[(i*3)+2]);
+         rv = 0;
+      }
+      if(data_in2[i] != test[(i*3)+2])
+      {
+         return 0;
+         iprintf("data_in2[%d] %lu != %lu\n", i, data_in2[i], test[(i*3)+2]);
+         rv = 0;
+      }
+      if(data_in3[i] != test[(i*3)+2])
+      {
+         return 0;
+         iprintf("data_in3[%d] %lu != %lu\n", i, data_in3[i], test[(i*3)+2]);
+         rv = 0;
+      }
+      if(data_in4[i] != test[(i*3)+2])
+      {
+         return 0;
+         iprintf("data_in4[%d] %lu != %lu\n", i, data_in4[i], test[(i*3)+2]);
+         rv = 0;
+      }
+   }
+   return rv;
    if (r != 0)
       return 0;
    return 1;

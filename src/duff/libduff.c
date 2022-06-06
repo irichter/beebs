@@ -111,7 +111,7 @@ char target[ARRAYSIZE];
 
 int benchmark(void)
 {
-  duffcopy( source, target, INVOCATION_COUNT );
+  duffcopy( target, source, INVOCATION_COUNT );
   return 0;
 }
 

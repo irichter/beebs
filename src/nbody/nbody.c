@@ -65,6 +65,7 @@
    OF THE POSSIBILITY OF SUCH DAMAGE.  */
 
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "support.h"
@@ -179,6 +180,16 @@ int benchmark()
    return 0;
 }
 
+#include <float.h>
+
+int fp_not_equal(double a, double b) {
+   double epsilon = (0.0001) * fabs(b);
+   int rv = __builtin_expect(!!(fabs(a - b) > epsilon), 0);
+   if(rv)
+      printf(__FILE__ ": fp_not_equal(%lf, %lf), epsilon = %lf", a, b, epsilon);
+  return __builtin_expect(!!(fabs(a - b) > epsilon), 0);
+}
+
 int verify_benchmark(int unused) {
    int i, j;
    /* print expected values */
@@ -223,12 +234,12 @@ int verify_benchmark(int unused) {
 
    for (i=0; i<BODIES_SIZE; i++) {
       for (j=0; j<3; j++) {
-         if (solar_bodies[i].x[j] != expected[i].x[j])
+         if (fp_not_equal(solar_bodies[i].x[j], expected[i].x[j]))
             return 0;
-         if (solar_bodies[i].v[j] != expected[i].v[j])
+         if (fp_not_equal(solar_bodies[i].v[j], expected[i].v[j]))
             return 0;
       }
-      if (solar_bodies[i].mass != expected[i].mass)
+      if (fp_not_equal(solar_bodies[i].mass, expected[i].mass))
          return 0;
    }
    return 1;

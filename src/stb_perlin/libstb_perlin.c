@@ -29,6 +29,7 @@
 #include "support.h"
 /* Required for floor() */
 #include <math.h>
+#include <stdio.h>
 
 /* This scale factor will be changed to equalise the runtime of the
    benchmarks. */
@@ -190,12 +191,32 @@ static const float expected[PX_LIM][PX_LIM] =
     {0.00770395994, 0.105018653, 0.187921703, 0.238228887, 0.242842719, 0.200000048, 0.121270508, 0.0293106437, -0.0486289859, -0.0914399624}
 };
 
+float results[PX_LIM][PX_LIM];
 
 /* This benchmark does not support verification */
+
+#include <float.h>
+
+int fp_not_equal(float a, float b) {
+   float epsilon = (0.0001) * fabsf(b);
+   int rv = __builtin_expect(!!(fabsf(a - b) > epsilon), 0);
+   if(rv)
+      printf(__FILE__ ": fp_not_equal(%f, %f), epsilon = %f", a, b, epsilon);
+  return __builtin_expect(!!(fabsf(a - b) > epsilon), 0);
+}
 
 int
 verify_benchmark (int res __attribute ((unused)) )
 {
+   for(int ypx = 0; ypx < PX_LIM; ++ypx)
+   {
+      for(int xpx = 0; xpx < PX_LIM; ++xpx) {
+         if (fp_not_equal(results[ypx][xpx], expected[ypx][xpx])) {
+            return 0;
+         }
+      }
+   }
+   return 1;
   return -1;
 }
 
@@ -220,11 +241,11 @@ int benchmark(void)
 		{
 		    x = (float)xpx * NOISE_STEP + NOISE_START_XY;
 		    y = (float)ypx * NOISE_STEP + NOISE_START_XY;
-		    out = stb_perlin_noise3(x, y, NOISE_Z, 0, 0, 0);
-		    if (out != expected[ypx][xpx])
-			{
-			    ret = 1;
-			}
+		    results[ypx][xpx] = stb_perlin_noise3(x, y, NOISE_Z, 0, 0, 0);
+		   //  if (out != expected[ypx][xpx])
+			// {
+			//     ret = 1;
+			// }
 		}
 	}
 

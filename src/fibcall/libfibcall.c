@@ -93,19 +93,20 @@ initialise_benchmark (void)
 {
 }
 
-
+volatile int a = 30;
+volatile int r;
 
 int benchmark()
 {
-  int a;
-  int r;
+  // int a;
+  // int r;
 
-  a = 30;
+  // a = 30;
   r = fib(a);
   return r;
 }
 
-int verify_benchmark(int r)
+int verify_benchmark(int r0)
 {
   int exp = 832040;
   if (r != exp)

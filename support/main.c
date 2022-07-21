@@ -24,30 +24,44 @@
    SPDX-License-Identifier: GPL-3.0-or-later */
 
 #include "support.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 
 extern int initialise_benchmark (void);
 extern int verify_benchmark (int unused);
 
 int
-main (int   argc __attribute__ ((unused)),
-      char *argv[] __attribute__ ((unused)) )
+main (int   argc,
+      char *argv[])
 {
   int i;
   volatile int result;
   int correct;
 
+  int repeat_factor = REPEAT_FACTOR;
+
+  if (argc > 1)
+    {
+      int rf = atoi(argv[1]);
+      if (rf > 0)
+        {
+          repeat_factor = atoi(argv[1]);
+        }
+    }
+
   initialise_board ();
   initialise_benchmark ();
   start_trigger ();
 
-  for (i = 0; i < REPEAT_FACTOR; i++)
+  for (i = 0; i < repeat_factor; i++)
     {
       initialise_benchmark ();
       result = benchmark ();
     }
 
   stop_trigger ();
+  iprintf("repeat_factor : %u\n", repeat_factor);
 
   /* bmarks that use arrays will check a global array rather than int result */
 

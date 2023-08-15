@@ -262,19 +262,45 @@ int benchmark() {
 
 
 	total = max_size;
-	for (test_case = 0; test_case < sizeof(test_cases)/sizeof(test_cases[0]); test_case++) {
+	#define do_test(test_case_function) do {\
+		for (index = 0; index < total; index++) { \
+			Test item; \
+ \
+			item.value = test_case_function(index, total); \
+			item.index = index; \
+ \
+			array1[index] = item; \
+		} \
+\
+		MergeSort(array1, total, compare); \
+		__asm__("addi %0, %0, 1":"+r"(test_case):"A"(array1)); \
+		/*test_case += 1;*/ \
+		/*if(test_case >= sizeof(test_cases)/sizeof(test_cases[0])) \
+			return 0;*/ \
+		/*__asm__("":"+r"(test_case));*/ \
+	 } while(false)
 
-		for (index = 0; index < total; index++) {
-			Test item;
-
-			item.value = test_cases[test_case](index, total);
-			item.index = index;
-
-			array1[index] = item;
-		}
-
-		MergeSort(array1, total, compare);
-	}
+	
+	// test_case = 0;
+	__asm__("li %0, 0":"=r"(test_case));
+	do_test(test_cases[test_case]);
+	do_test(test_cases[test_case]);
+	do_test(test_cases[test_case]);
+	do_test(test_cases[test_case]);
+	do_test(test_cases[test_case]);
+	do_test(test_cases[test_case]);
+	do_test(test_cases[test_case]);
+	do_test(test_cases[test_case]);
+	do_test(test_cases[test_case]);
+	// do_test(TestingPathological);
+	// do_test(TestingRandom);
+	// do_test(TestingMostlyDescending);
+	// do_test(TestingMostlyAscending);
+	// do_test(TestingAscending);
+	// do_test(TestingDescending);
+	// do_test(TestingEqual);
+	// do_test(TestingJittered);
+	// do_test(TestingMostlyEqual);
 
 	return 0;
 }

@@ -134,10 +134,12 @@ static const int BODIES_SIZE = sizeof(solar_bodies) / sizeof(solar_bodies[0]);
 void offset_momentum(struct body *bodies, unsigned int nbodies)
 {
    unsigned int i, k;
-   for (i = 0; i < nbodies; ++i)
+   for (i = 0; i < nbodies; ++i) {
       for (k = 0; k < 3; ++k)
          bodies[0].v[k] -= bodies[i].v[k] * bodies[i].mass
             / SOLAR_MASS;
+      __asm__("":"+m"(bodies[0].v));
+      }
 }
 
 
@@ -174,8 +176,14 @@ int benchmark()
    int i;
    offset_momentum(solar_bodies, BODIES_SIZE);
    /*printf("%.9f\n", bodies_energy(solar_bodies, BODIES_SIZE));*/
-   for (i = 0; i < 100; ++i)
-       bodies_energy(solar_bodies, BODIES_SIZE);
+   for (i = 0; i < 100; ++i) {
+       double e = bodies_energy(solar_bodies, BODIES_SIZE);
+#if defined(__riscv_flen)
+       __asm__(""::"f"(e));
+#else
+       __asm__ volatile(""::"r"(e));
+#endif
+   }
    /*printf("%.9f\n", bodies_energy(solar_bodies, BODIES_SIZE));*/
    return 0;
 }
@@ -184,9 +192,9 @@ int benchmark()
 
 int fp_not_equal(double a, double b) {
    double epsilon = (0.0001) * fabs(b);
-   int rv = __builtin_expect(!!(fabs(a - b) > epsilon), 0);
-   if(rv)
-      printf(__FILE__ ": fp_not_equal(%lf, %lf), epsilon = %lf", a, b, epsilon);
+   // int rv = __builtin_expect(!!(fabs(a - b) > epsilon), 0);
+   // if(rv)
+   //    printf(__FILE__ ": fp_not_equal(%lf, %lf), epsilon = %lf", a, b, epsilon);
   return __builtin_expect(!!(fabs(a - b) > epsilon), 0);
 }
 

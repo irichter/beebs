@@ -76,6 +76,7 @@ int benchmark()
     SGLIB_HEAP_DELETE(int, a, ai, MAX_PARAMS, SGLIB_NUMERIC_COMPARATOR);
   }
 
+  __asm__("" : : "r"(cnt));
 
   return cnt;
 }

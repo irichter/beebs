@@ -119,6 +119,11 @@ verify_benchmark (int res __attribute ((unused)) )
   return -1;
 }
 
+#if __riscv_flen
+#define REG_FLOAT "f"
+#else
+#define REG_FLOAT "r"
+#endif
 
 void
 initialise_benchmark (void)
@@ -176,6 +181,7 @@ IILOOP:
 	N9  = 616 * LOOP;
 	N10 = 0;
 	N11 = 93 * LOOP;
+	__asm__("":"+r"(N1),"+r"(N2),"+r"(N3),"+r"(N4),"+r"(N6),"+r"(N7),"+r"(N8),"+r"(N9),"+r"(N10),"+r"(N11));
 /*
 C
 C	Module 1: Simple identifiers
@@ -185,12 +191,14 @@ C
 	X2  = -1.0;
 	X3  = -1.0;
 	X4  = -1.0;
+	__asm__("":"+"REG_FLOAT(X1),"+"REG_FLOAT(X2),"+"REG_FLOAT(X3),"+"REG_FLOAT(X4));
 
 	for (I = 1; I <= N1; I++) {
 	    X1 = (X1 + X2 + X3 - X4) * T;
 	    X2 = (X1 + X2 - X3 + X4) * T;
 	    X3 = (X1 - X2 + X3 + X4) * T;
 	    X4 = (-X1+ X2 + X3 + X4) * T;
+		__asm__("":"+"REG_FLOAT(X1),"+"REG_FLOAT(X2),"+"REG_FLOAT(X3),"+"REG_FLOAT(X4));
 	}
 #ifdef PRINTOUT
 	IF (JJ==II)POUT(N1,N1,N1,X1,X2,X3,X4);
@@ -205,12 +213,14 @@ C
 	E1[2] = -1.0;
 	E1[3] = -1.0;
 	E1[4] = -1.0;
+	__asm__("":"+"REG_FLOAT(E1[1]),"+"REG_FLOAT(E1[2]),"+"REG_FLOAT(E1[3]),"+"REG_FLOAT(E1[4]));
 
 	for (I = 1; I <= N2; I++) {
 	    E1[1] = ( E1[1] + E1[2] + E1[3] - E1[4]) * T;
 	    E1[2] = ( E1[1] + E1[2] - E1[3] + E1[4]) * T;
 	    E1[3] = ( E1[1] - E1[2] + E1[3] + E1[4]) * T;
 	    E1[4] = (-E1[1] + E1[2] + E1[3] + E1[4]) * T;
+	__asm__("":"+"REG_FLOAT(E1[1]),"+"REG_FLOAT(E1[2]),"+"REG_FLOAT(E1[3]),"+"REG_FLOAT(E1[4]));
 	}
 
 #ifdef PRINTOUT
@@ -222,8 +232,10 @@ C
 C	Module 3: Array as parameter
 C
 */
-	for (I = 1; I <= N3; I++)
+	for (I = 1; I <= N3; I++) {
 		PA(E1);
+	    __asm__("":"+"REG_FLOAT(E1[1]),"+"REG_FLOAT(E1[2]),"+"REG_FLOAT(E1[3]),"+"REG_FLOAT(E1[4]));
+	}
 
 #ifdef PRINTOUT
 	IF (JJ==II)POUT(N3,N2,N2,E1[1],E1[2],E1[3],E1[4]);
@@ -236,20 +248,24 @@ C
 */
 	J = 1;
 	for (I = 1; I <= N4; I++) {
+		__asm__("":"+r"(J));
 		if (J == 1)
 			J = 2;
 		else
 			J = 3;
 
+		__asm__("":"+r"(J));
 		if (J > 2)
 			J = 0;
 		else
 			J = 1;
 
+		__asm__("":"+r"(J));
 		if (J < 1)
 			J = 1;
 		else
 			J = 0;
+		__asm__("":"+r"(J));
 	}
 
 #ifdef PRINTOUT
@@ -268,11 +284,13 @@ C
 	L = 3;
 
 	for (I = 1; I <= N6; I++) {
+		__asm__("":"+r"(J),"+r"(K),"+r"(L));
 	    J = J * (K-J) * (L-K);
 	    K = L * K - (L-J) * K;
 	    L = (L-K) * (K+J);
 	    E1[L-1] = J + K + L;
 	    E1[K-1] = J * K * L;
+		__asm__("":"+"REG_FLOAT(E1[L-1]),"+"REG_FLOAT(E1[K-1]),"+r"(J),"+r"(K),"+r"(L));
 	}
 
 #ifdef PRINTOUT
@@ -288,8 +306,11 @@ C
 	Y = 0.5;
 
 	for (I = 1; I <= N7; I++) {
+		__asm__("":"+"REG_FLOAT(T),"+"REG_FLOAT(T2),"+"REG_FLOAT(X),"+"REG_FLOAT(Y));
 		X = T * DATAN(T2*DSIN(X)*DCOS(X)/(DCOS(X+Y)+DCOS(X-Y)-1.0));
+		__asm__("":"+"REG_FLOAT(X));
 		Y = T * DATAN(T2*DSIN(Y)*DCOS(Y)/(DCOS(X+Y)+DCOS(X-Y)-1.0));
+		__asm__("":"+"REG_FLOAT(Y));
 	}
 
 #ifdef PRINTOUT
@@ -305,8 +326,11 @@ C
 	Y = 1.0;
 	Z = 1.0;
 
-	for (I = 1; I <= N8; I++)
+	for (I = 1; I <= N8; I++) {
+		__asm__("":"+"REG_FLOAT(X),"+"REG_FLOAT(Y));
 		P3(X,Y,&Z);
+		__asm__("":"+"REG_FLOAT(Z));
+	}
 
 #ifdef PRINTOUT
 	IF (JJ==II)POUT(N8,J,K,X,Y,Z,Z);
@@ -324,8 +348,11 @@ C
 	E1[2] = 2.0;
 	E1[3] = 3.0;
 
-	for (I = 1; I <= N9; I++)
+	for (I = 1; I <= N9; I++) {
+	    __asm__("":"+"REG_FLOAT(E1[1]),"+"REG_FLOAT(E1[2]),"+"REG_FLOAT(E1[3]),"+r"(J),"+r"(K),"+r"(L));
 		P0();
+	    __asm__("":"+"REG_FLOAT(E1[1]),"+"REG_FLOAT(E1[2]),"+"REG_FLOAT(E1[3]));
+	}
 
 #ifdef PRINTOUT
 	IF (JJ==II)POUT(N9,J,K,E1[1],E1[2],E1[3],E1[4]);
@@ -340,11 +367,13 @@ C
 	K = 3;
 
 	for (I = 1; I <= N10; I++) {
+	    __asm__("":"+r"(J),"+r"(K));
 	    J = J + K;
 	    K = J + K;
 	    J = K - J;
 	    K = K - J - J;
 	}
+    __asm__("":"+r"(J),"+r"(K));
 
 #ifdef PRINTOUT
 	IF (JJ==II)POUT(N10,J,K,X1,X2,X3,X4);
@@ -357,8 +386,11 @@ C
 */
 	X = 0.75;
 
-	for (I = 1; I <= N11; I++)
+	for (I = 1; I <= N11; I++) {
+        __asm__("":"+"REG_FLOAT(X),"+"REG_FLOAT(T1));
 		X = DSQRT(DEXP(DLOG(X)/T1));
+	}
+    __asm__("":"+"REG_FLOAT(X));
 
 #ifdef PRINTOUT
 	IF (JJ==II)POUT(N11,J,K,X,X,X,X);
@@ -387,6 +419,7 @@ C
 C      where TIME is in seconds.
 C--------------------------------------------------------------------
 */
+	// __asm__("":::"memory");
 	return(0);
 }
 
@@ -395,12 +428,16 @@ PA(double E[])
 {
 	J = 0;
 
+	__asm__("":"+"REG_FLOAT(E[1]),"+"REG_FLOAT(E[2]),"+"REG_FLOAT(E[3]),"+"REG_FLOAT(E[4]),"+"REG_FLOAT(T),"+"REG_FLOAT(T2));
+
 L10:
 	E[1] = ( E[1] + E[2] + E[3] - E[4]) * T;
 	E[2] = ( E[1] + E[2] - E[3] + E[4]) * T;
 	E[3] = ( E[1] - E[2] + E[3] + E[4]) * T;
 	E[4] = (-E[1] + E[2] + E[3] + E[4]) / T2;
 	J += 1;
+
+	__asm__("":"+"REG_FLOAT(E[1]),"+"REG_FLOAT(E[2]),"+"REG_FLOAT(E[3]),"+"REG_FLOAT(E[4]));
 
 	if (J < 6)
 		goto L10;

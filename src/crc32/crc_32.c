@@ -201,13 +201,13 @@ int benchmark()
   return (int)r;
 }
 
-int	iprintf (const char *, ...)
-               _ATTRIBUTE ((__format__ (__printf__, 1, 2)));
+// int	iprintf (const char *, ...)
+//                _ATTRIBUTE ((__format__ (__printf__, 1, 2)));
 
 int verify_benchmark(int r)
 {
   int expected = 1703161001;
-  iprintf("%d =? %d", r, expected);
+//   iprintf("%d =? %d", r, expected);
 
   if (r != expected)
     return 0;

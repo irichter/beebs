@@ -133,6 +133,7 @@ int benchmark()
   n = 0;
   for(i = 0; i < 10; ++i)
     frac(nums[i], &n, &d, error);
+  __asm__("" : : "r"(i)); /* ensure that loop is run */
 
   return d;
 }

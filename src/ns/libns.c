@@ -1097,7 +1097,8 @@ benchmark(void)
 
 #else
 
-  foo(400);
+  int i = foo(400);
+  __asm__("" : : "r"(i));
 
 #endif
 

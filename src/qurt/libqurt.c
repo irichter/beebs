@@ -134,6 +134,7 @@ int  qurt()
 		 x1[1] = 0.0;
 		 x2[0] = (-a[1] - w2) / w1;
 		 x2[1] = 0.0;
+     __asm__(""::"A"(x1), "A"(x2));
 		 return(0);
 	}
 	else if(d == 0.0)
@@ -143,6 +144,7 @@ int  qurt()
 		 x1[1] = 0.0;
 		 x2[0] = x1[0];
 		 x2[1] = 0.0;
+     __asm__(""::"A"(x1), "A"(x2));
 		 return(0);
 	}
 	else
@@ -153,6 +155,7 @@ int  qurt()
 		 x1[1] = w2;
 		 x2[0] = x1[0];
 		 x2[1] = -w2;
+     __asm__(""::"A"(x1), "A"(x2));
 		 return(0);
 	}
 }
@@ -184,10 +187,13 @@ int
 benchmark (void)
 {
   a = in1;
+  __asm__("":"+r"(a));
   result = qurt();
   a = in2;
+  __asm__("":"+r"(a));
   result = qurt();
   a = in3;
+  __asm__("":"+r"(a));
   result = qurt();
   return 0;
 }

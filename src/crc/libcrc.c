@@ -168,6 +168,7 @@ int benchmark(void)
   i2=icrc(i1,n+2,(short)0,1);
 
   /* Silence compiler warning about unused variables.  */
+  __asm__("" : : "r"(i2));
   (void) i2;
 
   return 0;

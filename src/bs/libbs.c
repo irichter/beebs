@@ -131,7 +131,10 @@ initialise_benchmark (void)
 
 int benchmark()
 {
-  result = binary_search(8);
+  int x = 8;
+  __asm__("":"+r"(x));
+  result = binary_search(x);//8);
+  __asm__("":"+r"(result));
   return 0;
 }
 

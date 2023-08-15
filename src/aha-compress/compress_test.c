@@ -222,25 +222,25 @@ int verify_benchmark(int r)
       if(data_in1[i] != test[(i*3)+2])
       {
          return 0;
-         iprintf("data_in1[%d] %lu != %lu\n", i, data_in1[i], test[(i*3)+2]);
+         printf("data_in1[%d] %lu != %lu\n", i, data_in1[i], test[(i*3)+2]);
          rv = 0;
       }
       if(data_in2[i] != test[(i*3)+2])
       {
          return 0;
-         iprintf("data_in2[%d] %lu != %lu\n", i, data_in2[i], test[(i*3)+2]);
+         printf("data_in2[%d] %lu != %lu\n", i, data_in2[i], test[(i*3)+2]);
          rv = 0;
       }
       if(data_in3[i] != test[(i*3)+2])
       {
          return 0;
-         iprintf("data_in3[%d] %lu != %lu\n", i, data_in3[i], test[(i*3)+2]);
+         printf("data_in3[%d] %lu != %lu\n", i, data_in3[i], test[(i*3)+2]);
          rv = 0;
       }
       if(data_in4[i] != test[(i*3)+2])
       {
          return 0;
-         iprintf("data_in4[%d] %lu != %lu\n", i, data_in4[i], test[(i*3)+2]);
+         printf("data_in4[%d] %lu != %lu\n", i, data_in4[i], test[(i*3)+2]);
          rv = 0;
       }
    }

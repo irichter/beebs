@@ -238,20 +238,20 @@ initialise_benchmark (void)
 
 
 int benchmark() {
-	long total, index, test_case;
+	long total, index;//, test_case;
 	Comparison compare = TestCompare;
 
-	__typeof__(&TestingPathological) test_cases[] = {
-		TestingPathological,
-		TestingRandom,
-		TestingMostlyDescending,
-		TestingMostlyAscending,
-		TestingAscending,
-		TestingDescending,
-		TestingEqual,
-		TestingJittered,
-		TestingMostlyEqual
-	};
+	// __typeof__(&TestingPathological) test_cases[] = {
+	// 	TestingPathological,
+	// 	TestingRandom,
+	// 	TestingMostlyDescending,
+	// 	TestingMostlyAscending,
+	// 	TestingAscending,
+	// 	TestingDescending,
+	// 	TestingEqual,
+	// 	TestingJittered,
+	// 	TestingMostlyEqual
+	// };
 
 	/* initialize the random-number generator. */
 	/* The original code used srand here, but not needed since we are
@@ -262,19 +262,29 @@ int benchmark() {
 
 
 	total = max_size;
-	for (test_case = 0; test_case < sizeof(test_cases)/sizeof(test_cases[0]); test_case++) {
-
-		for (index = 0; index < total; index++) {
-			Test item;
-
-			item.value = test_cases[test_case](index, total);
-			item.index = index;
-
-			array1[index] = item;
-		}
-
-		MergeSort(array1, total, compare);
-	}
+	#define do_test(test_case_function) do {\
+		for (index = 0; index < total; index++) { \
+			Test item; \
+ \
+			item.value = test_case_function(index, total); \
+			item.index = index; \
+ \
+			array1[index] = item; \
+		} \
+\
+		MergeSort(array1, total, compare); \
+		__asm__(""::"A"(array1)); \
+	 } while(false)
+	
+	do_test(TestingPathological);	
+	do_test(TestingRandom);
+	do_test(TestingMostlyDescending);
+	do_test(TestingMostlyAscending);
+	do_test(TestingAscending);
+	do_test(TestingDescending);
+	do_test(TestingEqual);
+	do_test(TestingJittered);
+	do_test(TestingMostlyEqual);
 
 	return 0;
 }

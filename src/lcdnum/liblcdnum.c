@@ -87,7 +87,7 @@ verify_benchmark (int res __attribute ((unused)) )
 {
   return -1;
 }
-
+         
 
 void
 initialise_benchmark (void)
@@ -106,6 +106,7 @@ int benchmark(void)
   for(i=0; i< n; i++)
     {
       a = IN;                   /* scan port */
+      __asm__("":"+r"(a));
       if(i<5)
         {
           a = a &0x0F;

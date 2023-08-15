@@ -187,9 +187,9 @@ benchmark (void)
 
 int fp_not_equal(float a, float b) {
    float epsilon = (0.0001) * fabsf(b);
-   int rv = __builtin_expect(!!(fabsf(a - b) > epsilon), 0);
-   if(rv)
-      printf(__FILE__ ": fp_not_equal(%f, %f), epsilon = %f", a, b, epsilon);
+  //  int rv = __builtin_expect(!!(fabsf(a - b) > epsilon), 0);
+  //  if(rv)
+  //     printf(__FILE__ ": fp_not_equal(%f, %f), epsilon = %f", a, b, epsilon);
   return __builtin_expect(!!(fabsf(a - b) > epsilon), 0);
 }
 

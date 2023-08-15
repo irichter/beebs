@@ -199,9 +199,9 @@ int RandomInteger()
 
 int fp_not_equal(double a, double b) {
    double epsilon = (0.0001) * fabs(b);
-   int rv = __builtin_expect(!!(fabs(a - b) > epsilon), 0);
-   if(rv)
-      printf(__FILE__ ": fp_not_equal(%lf, %lf), epsilon = %lf", a, b, epsilon);
+   // int rv = __builtin_expect(!!(fabs(a - b) > epsilon), 0);
+   // if(rv)
+   //    printf(__FILE__ ": fp_not_equal(%lf, %lf), epsilon = %lf", a, b, epsilon);
   return __builtin_expect(!!(fabs(a - b) > epsilon), 0);
 }
 

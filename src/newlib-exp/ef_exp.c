@@ -154,15 +154,31 @@ initialise_benchmark (void)
 {
 }
 
+#if __riscv_flen
+#define REG_FLOAT "f"
+#else
+#define REG_FLOAT "r"
+#endif
 
 int
 benchmark (void)
 {
-  result = __ieee754_expf(1);
-  result = __ieee754_expf(2);
-  result = __ieee754_expf(3);
-  result = __ieee754_expf(4);
-  result = __ieee754_expf(5);
+  float x;
+  x=1;
+  __asm__("":"+"REG_FLOAT(x));
+  result = __ieee754_expf(x);//1);
+  x=2;
+  __asm__("":"+"REG_FLOAT(x));
+  result = __ieee754_expf(x);//2);
+  x=3;
+  __asm__("":"+"REG_FLOAT(x));
+  result = __ieee754_expf(x);//3);
+  x=4;
+  __asm__("":"+"REG_FLOAT(x));
+  result = __ieee754_expf(x);//4);
+  x=5;
+  __asm__("":"+"REG_FLOAT(x));
+  result = __ieee754_expf(x);//5);
   return 0;
 }
 
